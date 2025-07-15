@@ -10,7 +10,14 @@ print("API_KEY",API_KEY)
 
 url = f"https://newsapi.org/v2/everything?q=tesla&from=2025-06-15&sortBy=publishedAt&apiKey={API_KEY}"
 
-request = requests.get(url)
-content = request.text
 
-print(content)
+# Make the request
+request = requests.get(url)
+
+# Get a dictionary with data
+content = request.json()
+
+# Access the article titles and descriptions
+for article in content["articles"]:
+    print(article["title"])
+    print(article["description"])
