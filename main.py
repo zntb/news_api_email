@@ -1,23 +1,25 @@
 from dotenv import load_dotenv
 import os
-
 import requests
+from send_email import send_email
 
-load_dotenv()  # Loads variables from .env
-
+load_dotenv() 
 API_KEY = os.getenv("NEWS_API_KEY")
-print("API_KEY",API_KEY)
+topic = "tesla"
 
-url = f"https://newsapi.org/v2/everything?q=tesla&from=2025-06-15&sortBy=publishedAt&apiKey={API_KEY}"
+url = f"https://newsapi.org/v2/everything?q={topic}&sortBy=publishedAt&apiKey={API_KEY}&language=en"
 
-
-# Make the request
+# Make request
 request = requests.get(url)
 
 # Get a dictionary with data
 content = request.json()
 
-# Access the article titles and descriptions
-for article in content["articles"]:
-    print(article["title"])
-    print(article["description"])
+# Access the article titles and description
+body = ""
+for article in content["articles"][:20]:
+    if article["title"] is not None:
+        body = body + article["title"] + "\n" + str(article["description"]) + "\n" + str(article["url"]) + 2*"\n"
+
+body = body.encode("utf-8")
+send_email(message=body)
